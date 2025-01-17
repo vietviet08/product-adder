@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "523443111355",
+    "project_id": "ecommerce-39795",
+    "storage_bucket": "ecommerce-39795.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:523443111355:android:b7527bba65281f4560f09e",
+        "android_client_info": {
+          "package_name": "com.vietquoc.ecommerce"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADR1-X2nkeFMAQJOp8K9n3NpOi78A8Ixs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:523443111355:android:38f37ef55bb65a3e60f09e",
+        "android_client_info": {
+          "package_name": "com.vietquoc.productadder"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADR1-X2nkeFMAQJOp8K9n3NpOi78A8Ixs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
