@@ -1,8 +1,24 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.gms.google.services)
 }
+
+// Đọc tệp local.properties
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(FileInputStream(localPropertiesFile))
+}
+
+// Lấy các giá trị từ local.properties
+val cloudinaryCloudName: String = localProperties["CLOUDINARY_CLOUD_NAME"] as String? ?: ""
+val cloudinaryApiKey: String = localProperties["CLOUDINARY_API_KEY"] as String? ?: ""
+val cloudinaryApiSecret: String = localProperties["CLOUDINARY_API_SECRET"] as String? ?: ""
+
 
 android {
     namespace = "com.vietquoc.productadder"
@@ -37,6 +53,22 @@ android {
 
     buildFeatures{
         viewBinding = true
+        buildConfig = true
+    }
+
+    buildTypes {
+        getByName("debug") {
+            buildConfigField("String", "CLOUDINARY_CLOUD_NAME", "\"$cloudinaryCloudName\"")
+            buildConfigField("String", "CLOUDINARY_API_KEY", "\"$cloudinaryApiKey\"")
+            buildConfigField("String", "CLOUDINARY_API_SECRET", "\"$cloudinaryApiSecret\"")
+        }
+        getByName("release") {
+            buildConfigField("String", "CLOUDINARY_CLOUD_NAME", "\"$cloudinaryCloudName\"")
+            buildConfigField("String", "CLOUDINARY_API_KEY", "\"$cloudinaryApiKey\"")
+            buildConfigField("String", "CLOUDINARY_API_SECRET", "\"$cloudinaryApiSecret\"")
+            isMinifyEnabled = false
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
     }
 }
 
@@ -57,5 +89,9 @@ dependencies {
 
     val lifecycle_version = "2.8.7"
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version")
+
+    implementation("com.cloudinary:cloudinary-android:3.0.2")
+
+
 
 }

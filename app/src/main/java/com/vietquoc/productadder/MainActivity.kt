@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.cloudinary.Cloudinary
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import com.google.firebase.storage.storage
@@ -22,12 +23,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import java.lang.Exception
 import java.util.UUID
 
 class MainActivity : AppCompatActivity() {
+
+    val cloudinaryConfig = mapOf(
+        "cloud_name" to BuildConfig.CLOUDINARY_CLOUD_NAME,
+        "api_key" to BuildConfig.CLOUDINARY_API_KEY,
+        "api_secret" to BuildConfig.CLOUDINARY_API_SECRET
+    )
+
+    val cloudinary = Cloudinary(cloudinaryConfig)
+
     private val productStorage = Firebase.storage.reference
     private val firestore = Firebase.firestore
 
@@ -138,13 +146,22 @@ class MainActivity : AppCompatActivity() {
                 val uploadTasks = imageByteArrays.map { byteArray ->
                     async {
                         val id = UUID.randomUUID().toString()
-                        val imageStorage = productStorage.child("products/images/$id")
-                        val result = imageStorage.putBytes(byteArray).await()
-                        result.storage.downloadUrl.await().toString()
+                        val options = mapOf(
+                            "public_id" to "products/$id",
+                            "resource_type" to "image"
+                        )
+
+                        try {
+                            val result = cloudinary.uploader().upload(byteArray, options)
+                            result["secure_url"] as String
+                        } catch (e: Exception) {
+                            Log.e("Cloudinary", "Upload failed: ${e.message}")
+                            throw e
+                        }
                     }
                 }
-                images.addAll(uploadTasks.awaitAll()) // await for all uploads to finish and extract the urls
 
+                images.addAll(uploadTasks.awaitAll())
 
                 val product = Product(
                     id = UUID.randomUUID().toString(),
@@ -161,6 +178,11 @@ class MainActivity : AppCompatActivity() {
                 firestore.collection("Products").add(product)
                     .addOnSuccessListener {
                         hideLoading()
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Product saved successfully",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                     .addOnFailureListener { e ->
                         hideLoading()
