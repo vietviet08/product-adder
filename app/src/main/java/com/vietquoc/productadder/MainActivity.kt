@@ -183,6 +183,9 @@ class MainActivity : AppCompatActivity() {
                             "Product saved successfully",
                             Toast.LENGTH_LONG
                         ).show()
+                        images.removeAll(images)
+                        selectedImages.removeAll(selectedImages)
+                        selectedColors.removeAll(selectedColors)
                     }
                     .addOnFailureListener { e ->
                         hideLoading()
@@ -192,6 +195,9 @@ class MainActivity : AppCompatActivity() {
                             "Failed to save product: ${e.message}",
                             Toast.LENGTH_LONG
                         ).show()
+                        images.removeAll(images)
+                        selectedImages.removeAll(selectedImages)
+                        selectedColors.removeAll(selectedColors)
                     }
 
             } catch (e: Exception) {
@@ -203,6 +209,9 @@ class MainActivity : AppCompatActivity() {
                         "Error during upload: ${e.message}",
                         Toast.LENGTH_LONG
                     ).show()
+                    images.removeAll(images)
+                    selectedImages.removeAll(selectedImages)
+                    selectedColors.removeAll(selectedColors)
                 }
             }
         }
